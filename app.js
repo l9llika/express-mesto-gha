@@ -1,13 +1,5 @@
 const express = require('express');
 
-const app = express();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const usersRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
-
-const { PORT = 3000 } = process.env;
-
 const INCORRECT_ERROR_CODE = 400;
 const NOT_FOUND_ERROR_CODE = 404;
 const DEFAULT_ERROR_CODE = 500;
@@ -17,6 +9,14 @@ module.exports = {
   NOT_FOUND_ERROR_CODE,
   DEFAULT_ERROR_CODE,
 };
+
+const app = express();
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const usersRouter = require('./routes/users');
+const cardsRouter = require('./routes/cards');
+
+const { PORT = 3000 } = process.env;
 
 mongoose.set('strictQuery', false);
 mongoose.connect('mongodb://localhost:27017/mestodb', {
@@ -35,6 +35,4 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);
