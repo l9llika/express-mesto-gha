@@ -23,16 +23,20 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '5d8b8592978f8bd833ca8133',
+  };
+
+  next();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
-app.use((req, res, next) => {
-  req.user = {
-    _id: '63bedb6d27ad78938bf82db5',
-  };
-
-  next();
+app.use((req, res) => {
+  res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Ошибка 404: несуществующая станица' });
 });
 
 app.listen(PORT);
