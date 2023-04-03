@@ -16,11 +16,11 @@ module.exports.getUserById = (req, res) => {
       return res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res
-          .status(INCORRECT_ERROR_CODE)
-          .send({ message: 'Переданы некорректные данные пользователя' });
-      }
+      // if (err.name === 'ValidationError') {
+      //   return res
+      //     .status(INCORRECT_ERROR_CODE)
+      //     .send({ message: 'Переданы некорректные данные пользователя' });
+      // }
       if (err.name === 'CastError') {
         return res
           .status(INCORRECT_ERROR_CODE)
@@ -58,9 +58,10 @@ module.exports.updateUser = (req, res) => {
           .status(INCORRECT_ERROR_CODE)
           .send({ message: 'Переданы некорректные данные при обновлении профиля' });
       }
-      if (err.name === 'CastError') {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
-      }
+      // if (err.name === 'CastError') {
+      // eslint-disable-next-line max-len
+      //   return res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
+      // }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
     });
 };
@@ -75,9 +76,10 @@ module.exports.updateAvatar = (req, res) => {
           .status(INCORRECT_ERROR_CODE)
           .send({ message: 'Переданы некорректные данные при обновлении аватара' });
       }
-      if (err.name === 'CastError') {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
-      }
+      // if (err.name === 'CastError') {
+      // eslint-disable-next-line max-len
+      //   return res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Пользователь по указанному _id не найден' });
+      // }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Ошибка по умолчанию' });
     });
 };
