@@ -7,19 +7,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Жан плов ВАНДАМ!',
+    default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     required: true,
     minlength: 2,
     maxlength: 30,
-    default: 'Чёткий парень',
+    default: 'Исследователь',
   },
   avatar: {
     type: String,
     required: true,
-    default: 'https://i.pinimg.com/564x/94/2b/0b/942b0b5510f73be4885d812cc4228de0--claude-van-damme-best-jeans.jpg',
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator: (url) => /(:?(?:https?:\/\/)?(?:www\.)?)?[-a-z0-9]+\.\w+/ig.test(url),
       message: 'Некорретктный URL',
