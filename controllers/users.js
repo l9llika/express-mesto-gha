@@ -6,7 +6,8 @@ const ValidationError = require('../errors/validation-error');
 const RegistrationError = require('../errors/registration-error');
 const AuthError = require('../errors/auth-error');
 
-const { JWT_SECRET = 'super-srtong-secret' } = process.env;
+const { SALT_NUMBER } = require('../utils/constants');
+const { JWT_SECRET } = require('../utils/jwt');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -25,11 +26,9 @@ module.exports.getUserById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      if (err.message === 'not found') {
-        next(new NotFoundError('Пользователь по указанному _id не найден'));
-      }
-      next(err);
     });
 };
 
@@ -44,11 +43,9 @@ module.exports.getUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные пользователя'));
+      } else {
+        next(err);
       }
-      if (err.message === 'not found') {
-        next(new NotFoundError('Пользователь по указанному _id не найден'));
-      }
-      next(err);
     });
 };
 
@@ -60,7 +57,7 @@ module.exports.createUser = (req, res, next) => {
     email,
     password,
   } = req.body;
-  bcrypt.hash(password, 10)
+  bcrypt.hash(password, SALT_NUMBER)
     .then((hash) => User.create({
       name,
       about,
@@ -79,11 +76,11 @@ module.exports.createUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new ValidationError('Переданы некорректные данные при создании пользователя'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new RegistrationError('Такой пользователь уже существует'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -103,8 +100,9 @@ module.exports.updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -124,8 +122,9 @@ module.exports.updateAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные при обновлении аватара'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 

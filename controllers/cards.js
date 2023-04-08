@@ -5,7 +5,6 @@ const ForbiddenDeleteError = require('../errors/forbidden-delete-error');
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .populate('owner')
     .then((cards) => res.status(200).send(cards))
     .catch(next);
 };
@@ -17,13 +16,13 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные при создании карточки');
+        next(new ValidationError('Переданы некорректные данные при создании карточки'));
       }
       next(err);
     });
 };
 module.exports.deleteCard = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена');
@@ -31,13 +30,15 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenDeleteError('Вы не можете удалить карточку другого пользователя');
       }
+      card.delete();
       res.status(200).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные карточки'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -52,8 +53,9 @@ module.exports.likeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для постановки лайка'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
@@ -68,7 +70,8 @@ module.exports.dislikeCard = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new ValidationError('Переданы некорректные данные для удаления лайка'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
